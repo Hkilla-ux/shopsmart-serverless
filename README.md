@@ -1,84 +1,156 @@
-ShopSmart – Serverless E-Commerce Web Application (AWS Capstone Project)
+## **ShopSmart – Serverless E-Commerce Web Application (AWS Re/Start Capstone Project)**
 
-A fully serverless e-commerce platform built with AWS Lambda (Python), API Gateway, DynamoDB, and a static website hosted on S3.
-Designed to run 100% on AWS Free Tier and created as a capstone project for cloud engineering.
+A fully serverless e-commerce application built using AWS Lambda, API Gateway, DynamoDB, and S3, designed to run 100% on AWS Free Tier.
 
-🚀 Project Overview
+## **Overview**
 
-ShopSmart is a simple but fully functional e-commerce web application demonstrating cloud-native architecture using serverless technologies.
+ShopSmart is a cloud-native, serverless e-commerce web application designed to demonstrate real-world AWS architecture skills.
+The system allows users to browse products, add items to a shopping cart, and complete checkout — all powered by AWS Lambda (Python), API Gateway, DynamoDB, and a static frontend hosted on S3.
+This project highlights modern serverless patterns, least-privilege IAM design, and event-driven application workflows.
 
-Users can:
+## **Objectives & Learning Outcomes**
 
-View a list of products
+By completing this project, we will learn:
 
-Add products to a cart
+How to design and deploy a serverless architecture on AWS
 
-View their shopping cart
+How to build a Python backend using AWS Lambda
 
-Checkout and place an order
+How to expose APIs using API Gateway HTTP APIs
 
-The backend is powered by AWS Lambda and DynamoDB, while the frontend is a lightweight HTML/JavaScript website hosted on Amazon S3.
+How to model and store application data using DynamoDB
 
-🏗️ Architecture Diagram
+How to host static websites using Amazon S3
 
-(Optional – add your PNG here once you draw it in draw.io)
-Example:
+How frontends call APIs in serverless applications
 
-User Browser → S3 Static Website → API Gateway → Lambda (Python) → DynamoDB
+How IAM roles, permissions, and policies secure workloads
 
-🧰 Technologies Used
-AWS Services
+How to monitor serverless apps using CloudWatch Logs
 
-AWS Lambda (Python 3.10+)
+How to explain a technical cloud project in interviews
 
-Amazon API Gateway (HTTP API)
+## **Architecture**
+<img width="1536" height="600" alt="be32f711-08e1-4055-a073-793eacb30927" src="https://github.com/user-attachments/assets/078fc5a8-1331-47d9-94fe-19208ae40483" />
 
-Amazon DynamoDB
+### Architecture Summary:
+User → S3 Static Website → API Gateway → Lambda (Python) → DynamoDB
+The ShopSmart application is built using a fully serverless, AWS-native architecture designed to run 100% on the AWS Free Tier. It uses Amazon S3 for static web hosting, API Gateway for HTTP endpoints, AWS Lambda (Python) for backend logic, and DynamoDB for persistent storage. This architecture follows modern cloud engineering principles such as scalability, high availability, least-privilege IAM design, and fully managed services.
 
-Amazon S3 (Static Website Hosting)
 
-IAM (Roles, Permissions)
+## **Technologies Used**
 
-CloudWatch (Logs)
+### Frontend
+The frontend of this project is a lightweight static website built using HTML, CSS, and JavaScript, hosted on Amazon S3 Static Website Hosting. It includes a product listing page and a shopping cart page that communicate with the backend via API Gateway using secure HTTPS requests. The frontend is simple, fast, and fully serverless, making it ideal for AWS Free Tier deployments.
 
-Languages & Tools
 
-Python
+## **Commands & Steps**
 
-HTML / CSS / JavaScript
+```bash
+# ======================================================
+# Step 1: Create DynamoDB Tables
+# ======================================================
 
-AWS Console
+# Table 1: Products
+# Partition key: productId (String)
 
-GitHub
+# Table 2: Carts
+# Partition key: userId (String)
+# Sort key: productId (String)
 
-📂 Project Structure
-.
-├── backend
-│   └── lambda_function.py
-├── frontend
-│   ├── index.html
-│   └── cart.html
-├── architecture
-│   └── shopsmart-architecture.png   (optional)
-└── README.md
+# Table 3: Orders
+# Partition key: orderId (String)
 
-⚙️ Backend – AWS Lambda (Python)
+# Add sample products manually via AWS Console (DynamoDB Items)
+# Example item:
+# {
+#   "productId": "p1",
+#   "name": "Red Hoodie",
+#   "price": 39.99,
+#   "description": "Warm hoodie",
+#   "imageUrl": "https://via.placeholder.com/150"
+# }
 
-All backend logic is handled by one Lambda function.
-It supports:
+# ======================================================
+# Step 2: Create an IAM Role for Lambda
+# ======================================================
 
-Method	Path	Description
-GET	/products	List all products
-GET	/products/{id}	Get product details
-GET	/cart	Get user cart
-POST	/cart	Add item to cart
-POST	/checkout	Checkout & create order
-⭐ Lambda Environment Variables
-PRODUCTS_TABLE=Products
-CARTS_TABLE=Carts
-ORDERS_TABLE=Orders
+# Create role: ShopSmartLambdaRole
+# Attach:
+#   - AWSLambdaBasicExecutionRole
+#   - AmazonDynamoDBFullAccess (training purpose)
 
-⭐ Lambda Code (backend/lambda_function.py)
+# ======================================================
+# Step 3: Create Lambda (Python 3.10)
+# ======================================================
+
+# Environment variables:
+# PRODUCTS_TABLE=Products
+# CARTS_TABLE=Carts
+# ORDERS_TABLE=Orders
+
+# Paste full lambda_function.py code into console editor
+# (Included in "Backend Code" section below)
+
+# ======================================================
+# Step 4: Create API Gateway (HTTP API)
+# ======================================================
+
+# Routes:
+# GET /products           -> Lambda
+# GET /products/{id}      -> Lambda
+# GET /cart               -> Lambda
+# POST /cart              -> Lambda
+# POST /checkout          -> Lambda
+
+# Enable CORS:
+# Allowed origins: *
+# Allowed methods: GET, POST, OPTIONS
+# Allowed headers: Content-Type
+
+# Copy your API Invoke URL for frontend usage
+
+# ======================================================
+# Step 5: Build Frontend (index.html + cart.html)
+# ======================================================
+
+# Replace:
+# const API_BASE_URL = "YOUR_API_GATEWAY_URL";
+
+# Upload to S3:
+# - index.html
+# - cart.html
+
+# Enable Static Website Hosting
+
+# Go to Permissions → Block Public Access → Disable (for demo)
+# Make index.html & cart.html public
+
+# Access site using S3 Website Endpoint URL
+
+# ======================================================
+# Step 6: Test End-to-End
+# ======================================================
+
+# Open S3 website:
+# - Load product list
+# - Add to cart
+# - View cart
+# - Checkout
+# - Verify "Orders" table in DynamoDB
+
+# ======================================================
+# Step 7: Cleanup (to avoid charges)
+# ======================================================
+# Delete S3 bucket, API Gateway, Lambda, DynamoDB tables
+
+```
+
+## **Backend Code (Lambda Function)**
+
+Save as backend/lambda_function.py
+
+```python
 import json
 import os
 import boto3
@@ -175,77 +247,96 @@ def lambda_handler(event, context):
 
     return make_response(404, {"message": "Not found"})
 
-🌐 Frontend – Amazon S3 Static Website
-/frontend/index.html
+```
 
-(Displays products & adds to cart)
+## **Screenshots**
 
-<script>
-const API_BASE_URL = "YOUR_API_GATEWAY_URL";
+Products Table Screenshot
+![Products Table](assets/screenshots/products-table.png)
 
-/frontend/cart.html
+Lambda Function Screenshot
+![Lambda](assets/screenshots/lambda.png)
 
-(Views cart items & completes checkout)
+API Gateway Routes
+![API Gateway](assets/screenshots/api-routes.png)
 
-<script>
-const API_BASE_URL = "YOUR_API_GATEWAY_URL";
+S3 Static Website Hosting
+![S3 Hosting](assets/screenshots/s3-hosting.png)
 
-🛢️ DynamoDB Tables
-Products
-Key	Type
-productId	String
+Application UI – Products Page
+![Products Page](assets/screenshots/products-ui.png)
 
-Example item:
+Application UI – Cart Page
+![Cart Page](assets/screenshots/cart-ui.png)
 
-{
-  "productId": "p1",
-  "name": "Red Hoodie",
-  "price": 39.99,
-  "description": "Warm hoodie",
-  "imageUrl": "https://via.placeholder.com/150"
-}
 
-Carts
+## **Tools Used**
 
-userId (Partition key)
+AWS Lambda
 
-productId (Sort key)
+Amazon API Gateway
 
-Orders
+DynamoDB
 
-orderId (Partition key)
+Amazon S3
 
-🧪 Testing the App
+IAM
 
-Open the S3 static website endpoint
+CloudWatch
 
-View the product list
+Python 3.10
 
-Add items to the cart
+HTML / CSS / JavaScript
 
-Visit cart.html
+GitHub
 
-Click Checkout
+## **Key Takeaways**
 
-View new order in DynamoDB Orders table
+Built a fully serverless application using S3, API Gateway, Lambda (Python), and DynamoDB.
 
-📌 Key Learnings
+Learned how to design and deploy modern cloud architectures using AWS best practices.
 
-How serverless architectures work
+Implemented secure, scalable, and cost-efficient components that run fully on the AWS Free Tier.
 
-How Lambda + API Gateway + DynamoDB integrate
+Gained hands-on experience with NoSQL data modeling, API development, and frontend–backend integration.
 
-How to host static sites on S3
+Practiced AWS operational skills such as IAM permissions, CORS configuration, and CloudWatch monitoring.
 
-How to build real cloud apps without servers
 
-How to stay within AWS Free Tier
+## **What Actually Happened** 
 
-How to structure and document cloud projects for recruiters
+Created three DynamoDB tables to store products, carts, and orders.
 
-👩‍💻 Author
+Wrote a Python Lambda backend to perform CRUD operations.
 
-Amarachi Emeziem
-Cloud Engineer | AWS | Python
-GitHub: your link
-LinkedIn: your link
+Created an API Gateway HTTP API with five routes.
+
+Enabled CORS so the frontend can call the API.
+
+Built a simple HTML/JS frontend to call the API Gateway.
+
+Hosted frontend on Amazon S3 Static Website Hosting.
+
+Connected everything end-to-end:
+
+S3 frontend ↔ API Gateway ↔ Lambda ↔ DynamoDB
+
+Verified data flow inside DynamoDB (products, cart items, orders).
+
+Tested UI functionality (browse → add to cart → checkout).
+
+Documented the entire project and added an architecture diagram + screenshots.
+
+
+
+## **Authors:**
+
+Hawi Jordan - Cloud Engineer
+
+Olusegun Ajayi-Johnson - Cloud Engineer
+
+Rory Mclean - Cloud Engineer
+
+MD Shohel Khan (Sohel) - Cloud Engineer
+
+Amarachi Emeziem - Cloud Engineer
